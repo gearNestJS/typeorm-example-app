@@ -1,21 +1,22 @@
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import { User } from "./entity/User";
+import 'reflect-metadata';
+import { createConnection, Connection } from 'typeorm';
+import { Post, User } from './entity';
 
-createConnection().then(async connection => {
+createConnection()
+  .then(async (connection: Connection) => {
+    const post: Post = new Post('post title', 'post body');
+    const user: User = new User('mary', 'dotson', 18);
 
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
+    const userRepository = connection.manager.getRepository(User);
+    const postRepository = connection.manager.getRepository(Post);
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+    await userRepository.save(user);
+    await postRepository.save(post);
 
-    console.log("Here you can setup and run express/koa/any other framework.");
+    const users: Array<User> = await userRepository.find();
+    const posts: Array<Post> = await postRepository.find();
 
-}).catch(error => console.log(error));
+    console.log('all posts:', posts);
+    console.log('all users:', users);
+  })
+  .catch((error) => console.log(error));
