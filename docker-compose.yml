@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  # frontend
+  frontend:
+    build: ./
+    container_name: 'frontend_crud'
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    command: npm run start
+    ports:
+      - '3000:3000'
+  # backend
+  postgres:
+    image: "postgres:9.6.1"
+    container_name: 'backend_crud'
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'typeorm_crud'
+    volumes:
+      - ./postgres_volume:/var/lib/postgresql/data
+  # admin panel
+  adminer:
+    image: adminer
+    container_name: 'panel_crud'
+    restart: always
+    ports:
+      - '8080:8080'
