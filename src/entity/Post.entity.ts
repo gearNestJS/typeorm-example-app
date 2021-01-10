@@ -1,13 +1,16 @@
+import { IsString } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, length: 100 })
+  @IsString()
+  @Column({ unique: true, length: 100})
   title: string;
 
+  @IsString()
   @Column()
   body: string;
 
