@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { PostCategory } from './PostCategory.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -7,15 +8,20 @@ export class Post {
   id: number;
 
   @IsString()
-  @Column({ unique: true, length: 100})
+  @Column({ unique: true, length: 100 })
   title: string;
 
   @IsString()
   @Column()
   body: string;
 
-  constructor(title: string, body: string) {
+  @ManyToMany((type) => PostCategory)
+  @JoinTable()
+  categories: PostCategory[];
+
+  constructor(title: string, body: string, categories: PostCategory[]) {
     this.title = title,
-    this.body = body
+    this.body = body,
+    this.categories = categories
   }
 }
